@@ -1,8 +1,6 @@
 const loadData = document.getElementById('loadData');
-const btnAdd = document.getElementById('btnAdd');
-const nim = document.querySelector("[name='nim']").value;
-const nama = document.querySelector("[name='nama']").value;
-const matkul_id = document.querySelector("[name='matkul_id']").value;
+const btn = document.getElementById('btnAdd');
+
 
 function getData() {
   loadData.innerHTML = '';
@@ -30,27 +28,24 @@ function getData() {
 }
 
 function insertData(nim, nama, matkul_id) {
-  let xhttp = new XMLHttpRequest();
-  let mahasiswa = [];
-  xhttp.onreadystatechange = function() {
-    if (this.status == 200 && this.readyState == 4) {
-      mahasiswa = {
-        nim: nim,
-        nama: nama,
-        matkul_id: matkul_id
-      }
-      mahasiswa = JSON.stringify(mahasiswa);
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST','insertMahasiswa.php',true);
+  xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+  xhr.onreadystatechange = function(){
+    if (xhr.readyState == 4 && xhr.status == 200) {
+      document.getElementById('status').innerHTML = xhr.responseText;
     }
   }
-  xhttp.open("POST", "insertMahasiswa.php");
-  xhttp.send(mahasiswa);
-  alert(this.response);
+  xhr.send("nim="+nim+"&nama="+nama+"&matkul_id="+matkul_id);
 }
 
-// ============================ END OF FUNCTION ================================= //
+// // ============================ END OF FUNCTION ================================= //
 getData();
 
-btnAdd.addEventListener('click', function() {
-  insertData(nim, nama, matkul_id);
+btn.addEventListener('click',function(){
+  const nim = document.querySelector("[name='nim']").value;
+  const nama = document.querySelector("[name='nama']").value;
+  const matkul_id = document.querySelector("[name='matkul_id']").value;
+  insertData(nim,nama,matkul_id);
   getData();
 });
